@@ -43,4 +43,4 @@ jobs:
         if: always()
         with:
           name: problems-report
-          path: build/reports/problems/problem-report.html
+          path: payment-service/build/reports/problems/problems-report.html
