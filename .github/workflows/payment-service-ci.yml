@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths:
-      - payment-service
+      - payment-service/**
   pull_request:
     branches:
       - main
     paths:
-      - payment-service
+      - payment-service/**
 
 jobs:
   test:
