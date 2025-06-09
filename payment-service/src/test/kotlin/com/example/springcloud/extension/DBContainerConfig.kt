@@ -46,9 +46,6 @@ class DBContainerConfig {
     }
 
     @Bean
-    fun redisContainer():
-
-    @Bean
     fun dbProperties(mongoDBContainer: GenericContainer<Nothing>, postgresContainer: PostgreSQLContainer<Nothing>): DynamicPropertyRegistrar {
         return DynamicPropertyRegistrar { registry ->
             // mongoDB
