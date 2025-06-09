@@ -23,7 +23,7 @@ jobs:
         run: docker-compose -f docker-compose-payment-service.yml up -d
 
       - name: Wait for services to be healthy
-      - run: | 
+        run: |
           echo "Waiting for all services to become healthy..."
           end_time=$((SECONDS + 300)) # 최대 5분(300초)간 기다림
           while [ $SECONDS -lt $end_time ]; do
