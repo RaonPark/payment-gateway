@@ -37,3 +37,10 @@ jobs:
         with:
           name: coverage-report
           path: payment-service/build/reports/jacoco/test/html
+
+      - name: Upload Problem Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: problems-report
+          path: build/reports/problems/problem-report.html
