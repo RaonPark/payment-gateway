@@ -24,13 +24,15 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'gradle'
 
       - name: Grant execute permission for Gradle wrapper
-        run: chmod +x payment-service/gradlew
+        run: chmod +x ./payment-service/gradlew
         working-directory: payment-service
 
       - name: Run Tests with Coverage
         run: ./gradlew clean test jacocoTestReport
+        working-directory: payment-service
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
