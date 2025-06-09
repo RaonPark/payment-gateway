@@ -101,7 +101,7 @@ dependencies {
     testImplementation 'org.testcontainers:junit-jupiter:1.21.0'
     testImplementation 'org.testcontainers:mongodb:1.21.0'
     testImplementation 'org.testcontainers:postgresql:1.21.0'
-    testImplementation 'com.redis:test-containers:2.2.2'
+    testImplementation 'com.redis:testcontainers-redis:2.2.2'
     // test containers for keycloak
     testImplementation 'com.github.dasniko:testcontainers-keycloak:3.4.0'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
