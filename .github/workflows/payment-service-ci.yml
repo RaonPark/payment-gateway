@@ -27,12 +27,10 @@ jobs:
           cache: 'gradle'
 
       - name: Grant execute permission for Gradle wrapper
-        run: chmod +x ./gradlew
-        working-directory: payment-service
+        run: chmod +x gradlew
 
       - name: Run Tests with Coverage
         run: ./gradlew clean test jacocoTestReport
-        working-directory: payment-service
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
