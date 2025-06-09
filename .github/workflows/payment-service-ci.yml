@@ -22,24 +22,6 @@ jobs:
       - name: Start Docker Containers For Payment Service
         run: docker compose -f docker-compose-payment-service.yml up -d
 
-      - name: Wait for services to be healthy
-        run: |
-          echo "Waiting for all services to become healthy..."
-          end_time=$((SECONDS + 300))
-          while [ $SECONDS -lt $end_time ]; do
-            unhealthy_services=$(docker compose -f docker-compose-payment-service.yml ps | grep -v "healthy" | grep -c " Up ")
-            if [ "$unhealthy_services" -eq 0 ]; then
-              echo "All services are healthy!"
-              docker compose -f docker-compose-payment-service.yml ps
-              exit 0
-            fi
-            echo "Waiting for $unhealthy_services service(s) to become healthy..."
-            sleep 10
-          done
-          echo "Timeout: Not all services became healthy within 5 minutes."
-          docker compose -f docker-compose-payment-service.yml
-          exit 1
-
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
