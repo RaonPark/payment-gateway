@@ -1,0 +1,48 @@
+spring:
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    mongodb:
+      uri: mongodb://root:1234@localhost:27017/PaymentDB?authSource=admin
+    redis:
+      host: localhost
+      port: 6379
+      lettuce:
+        pool:
+          max-active: 8
+  flyway:
+    enabled: false
+    baseline-on-migrate: true
+    baseline-version: 1
+  kafka:
+    bootstrap-servers: localhost:9101
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: PAYMENT-GROUP
+      auto-offset-reset: earliest
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8090/realms/oauth2
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+server:
+  port: 8081
+schema.registry.url: http://localhost:8085
+

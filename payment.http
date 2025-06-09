@@ -1,0 +1,17 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+
+POST http://localhost:8081/payment
+Content-Type: application/json
+
+{
+  "merchantId": "1",
+  "orderId": "1",
+  "amount": "122330.00",
+  "currency": "KRW",
+  "status": "REFUNDED",
+  "method": "CARD"
+}

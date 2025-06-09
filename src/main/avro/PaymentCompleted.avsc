@@ -1,0 +1,27 @@
+{
+  "name": "PaymentCompleted",
+  "namespace": "com.raonpark.avro",
+  "type": "record",
+  "fields": [
+    {
+      "name": "merchantId",
+      "type": "string"
+    },
+    {
+      "name": "status",
+      "type": "string"
+    },
+    {
+      "name": "paymentId",
+      "type": "long"
+    },
+    {
+      "name": "paidAt",
+      "type": "string"
+    },
+    {
+      "name": "responseURI",
+      "type": "string"
+    }
+  ]
+}
