@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - main
+    paths:
+      - payment-service
   pull_request:
     branches:
       - main
+    paths:
+      - payment-service
 
 jobs:
   test:
@@ -26,8 +30,8 @@ jobs:
           distribution: 'temurin'
 
       - name: Grant execute permission for Gradle wrapper
-        run: chmod +x springcloud/gradlew
-        working-directory: ./springcloud
+        run: chmod +x payment-service/gradlew
+        working-directory: payment-service
 
       - name: Run Tests with Coverage
         run: ./gradlew clean test jacocoTestReport
@@ -36,4 +40,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: springcloud/build/reports/jacoco/test/html
+          path: payment-service/build/reports/jacoco/test/html
