@@ -27,7 +27,7 @@ jobs:
           cache: 'gradle'
 
       - name: Grant execute permission for Gradle wrapper
-        run: chmod +x ./payment-service/gradlew
+        run: chmod +x ./gradlew
         working-directory: payment-service
 
       - name: Run Tests with Coverage
