@@ -31,7 +31,7 @@ class WebhookService(
         groupId = "payment_groups",
         containerFactory = "paymentCompletedKafkaListenerContainerFactory",
     )
-    suspend fun paymentResponse(paymentCompleted: PaymentCompleted, ack: Acknowledgment) {
+    fun paymentResponse(paymentCompleted: PaymentCompleted, ack: Acknowledgment) {
         log.info { "paymentResponse incoming: $paymentCompleted" }
 
         val paymentResponse = PaymentResponse(
@@ -40,31 +40,33 @@ class WebhookService(
             paidAt = paymentCompleted.paidAt,
         )
 
-        val pgResult = webClientBuilder.build()
-            .post()
-            .uri(paymentCompleted.responseURI)
-            .body(BodyInserters.fromValue(paymentResponse))
-            .awaitExchange { clientResponse ->
-                if (clientResponse.statusCode().is2xxSuccessful) {
-                    log.info { "Payment Request Is Completed" }
-                    clientResponse.awaitBody<PaymentSuccessFromMerchant>()
-                } else {
-                    paymentRepository
-                    log.info { "Payment Request Is Failed" }
-                    clientResponse.awaitBody<PaymentFailedFromMerchant>()
+        runBlocking {
+            val pgResult = webClientBuilder.build()
+                .post()
+                .uri(paymentCompleted.responseURI)
+                .body(BodyInserters.fromValue(paymentResponse))
+                .awaitExchange { clientResponse ->
+                    if (clientResponse.statusCode().is2xxSuccessful) {
+                        log.info { "Payment Request Is Completed" }
+                        clientResponse.awaitBody<PaymentSuccessFromMerchant>()
+                    } else {
+                        paymentRepository
+                        log.info { "Payment Request Is Failed" }
+                        clientResponse.awaitBody<PaymentFailedFromMerchant>()
+                    }
                 }
+
+            log.info { "Webhook for Payment Response : $pgResult" }
+
+            val paymentInfo = withContext(Dispatchers.IO) {
+                paymentRepository.findPaymentById(paymentCompleted.paymentId)
             }
 
-        log.info { "Webhook for Payment Response : $pgResult" }
-
-        val paymentInfo = withContext(Dispatchers.IO) {
-            paymentRepository.findPaymentById(paymentCompleted.paymentId)
-        }
-
-        if (pgResult is PaymentSuccessFromMerchant) {
-            paymentInfo.status = PaymentStatus.APPROVED
-        } else {
-            paymentInfo.status = PaymentStatus.FAILED
+            if (pgResult is PaymentSuccessFromMerchant) {
+                paymentInfo.status = PaymentStatus.APPROVED
+            } else {
+                paymentInfo.status = PaymentStatus.FAILED
+            }
         }
 
         ack.acknowledge()

@@ -144,6 +144,7 @@ jacocoTestReport {
     reports {
         xml.required = false
         csv.required = false
+        html.required = true
         html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
 }
@@ -156,7 +157,11 @@ jacoco {
 jacocoTestCoverageVerification {
     violationRules {
         rule {
+            element = 'CLASS'
+
             limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
                 minimum = 0.8
             }
         }
