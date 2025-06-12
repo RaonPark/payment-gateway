@@ -1,0 +1,57 @@
+spring:
+  flyway:
+    enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8090/realms/oauth2
+  cloud:
+    gateway:
+      enabled: true
+      routes:
+        - id: PAYMENT-SERVICE
+          uri: http://localhost:8082
+          predicates:
+            - Path=/payment-service/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: payment-service-resilience
+                fallbackUri: forward:/fallback
+    config:
+      enabled: false
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: root
+    password: 1234
+    url: jdbc:postgresql://localhost:5432/ApiGateway
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  main:
+    web-application-type: reactive
+  data:
+    mongodb:
+      uri: mongodb://root:1234@localhost:27017/ApiGateway?authSource=admin
+    redis:
+      host: localhost
+      port: 6379
+      lettuce:
+        pool:
+          max-active: 8
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+server:
+  port: 8082
+

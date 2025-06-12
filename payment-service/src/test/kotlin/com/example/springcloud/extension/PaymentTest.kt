@@ -68,15 +68,6 @@ class PaymentTest {
     @Autowired
     private lateinit var oAuth2ResourceServerProperties: OAuth2ResourceServerProperties
 
-//    @MockitoBean
-//    private lateinit var discoveryClient: DiscoveryClient
-//
-//    @MockitoBean
-//    private lateinit var webClientBuilder: WebClient.Builder
-//
-//    @MockitoBean
-//    private lateinit var paymentService: PaymentService
-
     @InjectWireMock("localhost")
     lateinit var wireMock: WireMockServer
 
@@ -152,6 +143,11 @@ class PaymentTest {
                 }
             }
         }
+    }
+
+    @Test
+    fun `should throw Unauthorized error because of token not taken`() {
+
     }
 
     @Test

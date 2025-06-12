@@ -1,14 +1,14 @@
 spring:
   flyway:
-    enabled: false
+    enabled: true
     baseline-on-migrate: true
   application:
-    name: PAYMENT-SERVICE
+    name: api-gateway
   datasource:
     driver-class-name: org.postgresql.Driver
     username: root
     password: 1234
-    url: jdbc:postgresql://localhost:5432/OrderDB
+    url: jdbc:postgresql://localhost:5432/ApiGateway
   jpa:
     database: postgresql
     hibernate:
@@ -41,18 +41,32 @@ spring:
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      group-id: PAYMENT-GROUP
+      group-id: API-GATEWAY
       auto-offset-reset: earliest
   cloud:
     config:
       enabled: false
     gateway:
-      enabled: false
+      enabled: true
+      routes:
+        - id: PAYMENT-SERVICE
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/payment-service/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: payment-service-resilience
+                fallbackUri: forward:/fallback
+
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8090/realms/oauth2
+
+---
+# eureka
 eureka:
   client:
     service-url:
@@ -62,11 +76,49 @@ eureka:
   instance:
     status-page-url-path: /api/info
     health-check-url-path: /api/health
+---
+
+---
+# resilience4j
+resilience4j:
+  ratelimiter:
+    instances:
+      payment-service-resilience:
+        limit-for-period: 10
+        limit-refresh-period:
+          seconds: 5
+        timeout-duration:
+          seconds: 2
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-size: 20
+        sliding-window-type: COUNT_BASED
+        minimum-number-of-calls: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state:
+          seconds: 10
+        permitted-number-of-calls-in-half-open-state: 5
+    instances:
+      payment-service-resilience:
+        base-config: default
+
+---
+
+---
+# logging
 logging:
   level:
     org.springframework.cloud: DEBUG
+---
+
+---
+# kafka
 kafka:
   schema-registry-url: http://localhost:8085
 schema.registry.url: http://localhost:8085
+---
+
+# port
 server:
-  port: 8090
+  port: 8082

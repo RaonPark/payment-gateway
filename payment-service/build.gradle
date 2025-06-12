@@ -43,9 +43,6 @@ repositories {
     maven {
         url "https://packages.confluent.io/maven"
     }
-    maven {
-        url "https://jitpack.io"
-    }
 }
 
 ext {
@@ -108,8 +105,6 @@ dependencies {
     // wiremock
     testImplementation 'org.wiremock.integrations:wiremock-spring-boot:3.6.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-    testImplementation 'com.github.testcontainers-all-things-kafka:cp-testcontainers:0.2.1'
 }
 
 dependencyManagement {
@@ -142,7 +137,7 @@ tasks.named('test') {
 jacocoTestReport {
     dependsOn test
     reports {
-        xml.required = false
+        xml.required = true
         csv.required = false
         html.required = true
     }
